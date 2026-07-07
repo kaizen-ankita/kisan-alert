@@ -13,6 +13,9 @@ app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: false })); // Twilio webhooks send form-encoded data
 
+// Serve the 'public' folder where index.html lives
+app.use(express.static(path.join(__dirname, "public")));
+
 const twilioClient =
   process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN
     ? twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN)

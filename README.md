@@ -17,9 +17,32 @@ cp .env.example .env
 Edit `.env` and paste your Gemini API key (get one free at
 https://aistudio.google.com/apikey — takes 30 seconds, no GCP setup needed).
 
+## 🌐 Start the Server
+
+Run the following command in your terminal to boot up the Node.js server:
+
 ```bash
 npm start
 ```
+
+_Note: Keep this terminal window open while using the application._
+
+### Available Browser Paths
+
+Once the server is running, open your web browser and navigate to the specific path you want to view:
+
+- **Main View (Home)**  
+  👉 [http://localhost:8080/home](http://localhost:8080/home)  
+  _(Loads the `index.html` file located in the `/public/home/` directory)_
+
+- **Dashboard View**  
+  👉 [http://localhost:8080/dashboard](http://localhost:8080/dashboard)  
+  _(Loads the `index.html` file located in the `/public/dashboard/` directory)_
+
+### 🛠️ Troubleshooting
+
+- **Error: Cannot GET /** – There is no default `index.html` in the main `/public` root. Make sure you type `/home` or `/dashboard` at the end of the URL.
+- **Port 8080 Blocked** – If the server fails to start, ensure no other applications are using port 8080.
 
 You should see:
 
