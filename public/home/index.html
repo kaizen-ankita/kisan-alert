@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>किसान अलर्ट · Kisan Alert</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-deep: #16241E;
+      --bg-panel: #1F332B;
+      --bg-panel-2: #253D33;
+      --paper: #F3EDDD;
+      --accent-mustard: #D6A039;
+      --accent-mustard-dim: #B98A2E;
+      --accent-sage: #8FAF7B;
+      --accent-rust: #B65C3D;
+      --accent-amber: #E0B04D;
+      --text-light: #F3EDDD;
+      --text-dim: #A9BDB0;
+      --text-dark: #1F2A20;
+      --line: rgba(243, 237, 221, 0.14);
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: radial-gradient(ellipse at top, #1C2F26 0%, #101C16 70%);
+      font-family: 'Inter', 'Noto Sans Devanagari', sans-serif;
+      color: var(--text-light);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .phone {
+      width: 100%;
+      max-width: 420px;
+      background: var(--bg-deep);
+      border-radius: 28px;
+      border: 1px solid var(--line);
+      box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.6);
+      overflow: hidden;
+    }
+
+    header {
+      padding: 28px 24px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .wordmark {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-size: 26px;
+      line-height: 1.1;
+      margin: 0;
+    }
+
+    .wordmark .en {
+      display: block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 400;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent-mustard);
+      margin-top: 6px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      padding: 16px 24px 0;
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 10px 8px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text-dim);
+      border: 1px solid var(--line);
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+
+    .tab.active {
+      background: var(--accent-mustard);
+      color: #1B1405;
+      border-color: var(--accent-mustard);
+    }
+
+    main {
+      padding: 20px 24px 28px;
+    }
+
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-dim);
+      margin: 16px 0 6px;
+      font-family: 'IBM Plex Mono', monospace;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    select,
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 14px;
+      background: var(--bg-panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      color: var(--text-light);
+      font-size: 15px;
+      font-family: inherit;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 14px;
+      border-radius: 14px;
+      border: none;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 14px;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-primary {
+      background: var(--accent-mustard);
+      color: #1B1405;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--accent-sage);
+      border: 1px solid var(--accent-sage);
+    }
+
+    .btn-voice {
+      background: var(--bg-panel-2);
+      color: var(--text-light);
+      border: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-voice.listening {
+      border-color: var(--accent-rust);
+    }
+
+    /* Signature element: voice waveform */
+    .waveform {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      height: 18px;
+    }
+
+    .waveform span {
+      display: block;
+      width: 3px;
+      background: var(--accent-sage);
+      border-radius: 2px;
+      height: 6px;
+    }
+
+    .btn-voice.listening .waveform span {
+      animation: wave 0.9s ease-in-out infinite;
+      background: var(--accent-rust);
+    }
+
+    .waveform span:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .waveform span:nth-child(2) {
+      animation-delay: 0.1s;
+    }
+
+    .waveform span:nth-child(3) {
+      animation-delay: 0.2s;
+    }
+
+    .waveform span:nth-child(4) {
+      animation-delay: 0.3s;
+    }
+
+    .waveform span:nth-child(5) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes wave {
+
+      0%,
+      100% {
+        height: 6px;
+      }
+
+      50% {
+        height: 18px;
+      }
+    }
+
+    .result-card {
+      margin-top: 20px;
+      background: var(--paper);
+      color: var(--text-dark);
+      border-radius: var(--radius);
+      padding: 18px 18px 16px;
+      display: none;
+    }
+
+    .result-card.show {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .result-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-mustard-dim);
+      margin-bottom: 6px;
+    }
+
+    .result-text {
+      font-size: 16px;
+      line-height: 1.55;
+      font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+    }
+
+    .data-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 12px;
+    }
+
+    .chip {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 10.5px;
+      background: rgba(31, 42, 32, 0.08);
+      border: 1px solid rgba(31, 42, 32, 0.15);
+      padding: 4px 8px;
+      border-radius: 8px;
+    }
+
+    .severity-badge {
+      display: inline-block;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 500;
+      margin-bottom: 10px;
+    }
+
+    .sev-low {
+      background: rgba(143, 175, 123, 0.25);
+      color: #4B6B3B;
+    }
+
+    .sev-medium {
+      background: rgba(214, 160, 57, 0.25);
+      color: #8A5F17;
+    }
+
+    .sev-high {
+      background: rgba(182, 92, 61, 0.25);
+      color: #8A3D24;
+    }
+
+    .escalate-note {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(31, 42, 32, 0.25);
+      font-size: 12.5px;
+      color: #5C6B5D;
+    }
+
+    .file-drop {
+      margin-top: 8px;
+      border: 1.5px dashed var(--line);
+      border-radius: 14px;
+      padding: 22px 14px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--text-dim);
+      cursor: pointer;
+    }
+
+    .file-drop.has-file {
+      border-color: var(--accent-sage);
+      color: var(--accent-sage);
+    }
+
+    .status-line {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11.5px;
+      color: var(--accent-amber);
+      margin-top: 10px;
+      min-height: 16px;
+    }
+
+    .config {
+      padding: 10px 24px 0;
+    }
+
+    .config input {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 11px;
+      padding: 8px 10px;
+    }
+
+    .config label {
+      margin: 0 0 4px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="phone">
+    <header>
+      <p class="wordmark">किसान अलर्ट
+        <span class="en">Smart Water, Crop &amp; Advisory System</span>
+      </p>
+    </header>
+
+    <div class="config">
+      <label>Backend URL</label>
+      <input type="text" id="backendUrl" value="https://kisan-alert-backend-1055808144053.asia-south1.run.app" />
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" data-view="advisory">फसल सलाह</div>
+      <div class="tab" data-view="diagnosis">फसल जांच</div>
+    </div>
+
+    <main>
+      <!-- ADVISORY VIEW -->
+      <section class="view active" id="view-advisory">
+        <label>जिला चुनें · Select district</label>
+        <select id="districtSelect">
+          <option value="">जिले लोड हो रहे हैं...</option>
+        </select>
+
+        <button class="btn btn-voice" id="voiceBtn">
+          <span class="waveform"><span></span><span></span><span></span><span></span><span></span></span>
+          <span id="voiceBtnLabel">बोलकर जिला बताएं</span>
+        </button>
+
+        <button class="btn btn-primary" id="getAdvisoryBtn">सलाह पाएं · Get Advisory</button>
+
+        <div class="status-line" id="advisoryStatus"></div>
+
+        <div class="result-card" id="advisoryResult">
+          <div class="result-label">Kisan Alert · Advisory (Hindi)</div>
+          <div class="result-text" id="advisoryText"></div>
+          <div class="data-strip" id="advisoryChips"></div>
+          <button class="btn btn-secondary" id="listenBtn">🔊 सुनें · Listen aloud</button>
+        </div>
+      </section>
+
+      <!-- DIAGNOSIS VIEW -->
+      <section class="view" id="view-diagnosis">
+        <label>किसान का नाम · Farmer name</label>
+        <input type="text" id="farmerName" placeholder="जैसे: रमेश पाटील" />
+
+        <label>फोटो अपलोड करें · Upload crop photo</label>
+        <div class="file-drop" id="fileDrop">📷 फोटो चुनने के लिए टैप करें</div>
+        <input type="file" id="fileInput" accept="image/*" style="display:none" />
+
+        <button class="btn btn-primary" id="diagnoseBtn">जांच करें · Diagnose</button>
+
+        <div class="status-line" id="diagnosisStatus"></div>
+
+        <div class="result-card" id="diagnosisResult">
+          <span class="severity-badge" id="severityBadge">—</span>
+          <div class="result-label" id="diseaseLabel">—</div>
+          <div class="result-text" id="diagnosisText"></div>
+          <div class="escalate-note" id="escalateNote"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+
+    function backendUrl() {
+      return $("backendUrl").value.replace(/\/$/, "");
+    }
+
+    // ---------- Tab switching ----------
+    document.querySelectorAll(".tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        document.querySelectorAll(".tab").forEach((t) => t.classList.remove("active"));
+        document.querySelectorAll(".view").forEach((v) => v.classList.remove("active"));
+        tab.classList.add("active");
+        $(`view-${tab.dataset.view}`).classList.add("active");
+      });
+    });
+
+    // ---------- Load districts on page load ----------
+    async function loadDistricts() {
+      try {
+        const res = await fetch(`${backendUrl()}/api/districts`);
+        const list = await res.json();
+        const select = $("districtSelect");
+        select.innerHTML = "";
+        list.forEach((d) => {
+          const opt = document.createElement("option");
+          opt.value = d.id;
+          opt.textContent = d.name;
+          select.appendChild(opt);
+        });
+      } catch (err) {
+        $("districtSelect").innerHTML = '<option value="">बैकएंड से कनेक्ट नहीं हो पाया</option>';
+        console.error(err);
+      }
+    }
+    loadDistricts();
+
+    // ---------- Voice input (Web Speech API - Hindi STT) ----------
+    let recognition;
+    let listening = false;
+
+    function setupRecognition() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        $("voiceBtnLabel").textContent = "इस ब्राउज़र में वॉइस समर्थित नहीं";
+        $("voiceBtn").disabled = true;
+        return;
+      }
+      recognition = new SpeechRecognition();
+      recognition.lang = "hi-IN";
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 3;
+
+      recognition.onstart = () => {
+        listening = true;
+        $("voiceBtn").classList.add("listening");
+        $("voiceBtnLabel").textContent = "सुन रहा हूँ...";
+      };
+
+      recognition.onend = () => {
+        listening = false;
+        $("voiceBtn").classList.remove("listening");
+        $("voiceBtnLabel").textContent = "बोलकर जिला बताएं";
+      };
+
+      recognition.onresult = (event) => {
+        const spoken = event.results[0][0].transcript.toLowerCase();
+        $("advisoryStatus").textContent = `सुना: "${event.results[0][0].transcript}"`;
+        // naive match: check if spoken text contains any district name
+        const select = $("districtSelect");
+        let matched = false;
+        for (const opt of select.options) {
+          if (spoken.includes(opt.textContent.toLowerCase()) || spoken.includes(opt.value)) {
+            select.value = opt.value;
+            matched = true;
+            break;
+          }
+        }
+        if (!matched) {
+          $("advisoryStatus").textContent += " — जिला नहीं पहचाना गया, कृपया सूची से चुनें";
+        }
+      };
+
+      recognition.onerror = (e) => {
+        $("advisoryStatus").textContent = `वॉइस त्रुटि: ${e.error}`;
+      };
+    }
+    setupRecognition();
+
+    $("voiceBtn").addEventListener("click", () => {
+      if (!recognition) return;
+      if (listening) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+    });
+
+    // ---------- Get Advisory ----------
+    $("getAdvisoryBtn").addEventListener("click", async () => {
+      const districtId = $("districtSelect").value;
+      if (!districtId) {
+        $("advisoryStatus").textContent = "कृपया पहले जिला चुनें";
+        return;
+      }
+      $("advisoryStatus").textContent = "सलाह तैयार की जा रही है...";
+      $("advisoryResult").classList.remove("show");
+
+      try {
+        const res = await fetch(`${backendUrl()}/api/crop-advisory`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ districtId, language: "hi" }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Unknown error");
+
+        $("advisoryText").textContent = data.advisory;
+        $("advisoryChips").innerHTML = "";
+        const d = data.inputData;
+        const chips = [
+          `मिट्टी: ${d.soil_type}`,
+          `बारिश: ${d.avg_rainfall_mm}mm`,
+          `भूजल: ${d.groundwater_depth_m}m`,
+          `NDVI: ${d.ndvi_mock}`,
+        ];
+        chips.forEach((c) => {
+          const el = document.createElement("span");
+          el.className = "chip";
+          el.textContent = c;
+          $("advisoryChips").appendChild(el);
+        });
+
+        $("advisoryResult").classList.add("show");
+        $("advisoryStatus").textContent = "";
+      } catch (err) {
+        $("advisoryStatus").textContent = `त्रुटि: ${err.message}`;
+      }
+    });
+
+    // ---------- Listen aloud (Hindi TTS) ----------
+    $("listenBtn").addEventListener("click", () => {
+      const text = $("advisoryText").textContent;
+      if (!text) return;
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "hi-IN";
+      utterance.rate = 0.95;
+      speechSynthesis.cancel();
+      speechSynthesis.speak(utterance);
+    });
+
+    // ---------- Photo upload ----------
+    let selectedFile = null;
+    $("fileDrop").addEventListener("click", () => $("fileInput").click());
+    $("fileInput").addEventListener("change", (e) => {
+      selectedFile = e.target.files[0];
+      if (selectedFile) {
+        $("fileDrop").textContent = `✅ ${selectedFile.name}`;
+        $("fileDrop").classList.add("has-file");
+      }
+    });
+
+    // ---------- Diagnose ----------
+    $("diagnoseBtn").addEventListener("click", async () => {
+      if (!selectedFile) {
+        $("diagnosisStatus").textContent = "कृपया पहले फोटो चुनें";
+        return;
+      }
+      $("diagnosisStatus").textContent = "जांच की जा रही है...";
+      $("diagnosisResult").classList.remove("show");
+
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+      formData.append("farmerName", $("farmerName").value || "Unknown");
+      formData.append("language", "hi");
+
+      try {
+        const res = await fetch(`${backendUrl()}/api/photo-diagnosis`, {
+          method: "POST",
+          body: formData,
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Unknown error");
+
+        const diag = data.diagnosis;
+        const sevClass = diag.severity === "high" ? "sev-high" : diag.severity === "medium" ? "sev-medium" : "sev-low";
+        $("severityBadge").className = `severity-badge ${sevClass}`;
+        $("severityBadge").textContent = `गंभीरता: ${diag.severity} · विश्वास: ${diag.confidence}%`;
+        $("diseaseLabel").textContent = diag.disease_name;
+        $("diagnosisText").textContent = diag.recommendation_hi || diag.recommendation_en;
+
+        if (data.status === "escalated") {
+          $("escalateNote").textContent = "⚠ यह मामला रायथु सेवा केंद्र को भेजा गया है — विशेषज्ञ जल्द संपर्क करेंगे।";
+        } else {
+          $("escalateNote").textContent = "✓ स्वतः हल — विशेषज्ञ संपर्क की आवश्यकता नहीं।";
+        }
+
+        $("diagnosisResult").classList.add("show");
+        $("diagnosisStatus").textContent = "";
+      } catch (err) {
+        $("diagnosisStatus").textContent = `त्रुटि: ${err.message}`;
+      }
+    });
+  </script>
+
+</body>
+
+</html>
